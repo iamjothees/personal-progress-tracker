@@ -1,0 +1,23 @@
+services:
+  app:
+    container_name: ppt
+    image: progress-tracker:latest
+    volumes:
+      - ./backend:/var/www/html
+      - ./frontend:/app
+    ports:
+      - 6000:80
+      - 6002:5173
+      - 6003:4173
+  db:
+    container_name: ppt-db
+    image: mysql:8.0
+    # command: --default-authentication-plugin=mysql_native_password
+    environment:
+        MYSQL_DATABASE: progress-tracker
+        MYSQL_USER: progress-tracker
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+        - ./dbdata:/var/lib/mysql
+    ports: 
+        - "6001:3306"
