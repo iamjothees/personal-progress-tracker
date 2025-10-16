@@ -6,9 +6,9 @@ services:
       - ./backend:/var/www/html
       - ./frontend:/app
     ports:
-      - 6000:80
-      - 6002:5173
-      - 6003:4173
+      - 4100:80
+      - 4102:5173
+      - 4103:4173
   db:
     container_name: ppt-db
     image: mysql:8.0
@@ -20,4 +20,4 @@ services:
     volumes:
         - ./dbdata:/var/lib/mysql
     ports: 
-        - "6001:3306"
+        - "4101:3306"
