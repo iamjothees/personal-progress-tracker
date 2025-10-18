@@ -23,11 +23,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
+    protected function casts(): array{
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function timers(){
+        return $this->hasMany(Timer::class, 'owner_id');
     }
 }
