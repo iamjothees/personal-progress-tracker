@@ -16,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api')
                 ->group([
                     base_path('app/Timer/routes.php'),
-                    base_path('app/Project/routes.php')
+                    base_path('app/Project/routes.php'),
+                    base_path('app/Task/routes.php')
                 ]);
         }
     )

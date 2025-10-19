@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Project\Models\Project;
+use App\Task\Models\Task;
 use App\Timer\Models\Timer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -39,5 +40,9 @@ class User extends Authenticatable
 
     public function projects(){
         return $this->belongsToMany(Project::class, 'project_participant', foreignPivotKey: 'participant_id');
+    }
+
+    public function participatingTasks(){
+        return $this->belongsToMany(Task::class, 'task_participant', foreignPivotKey: 'participant_id');
     }
 }

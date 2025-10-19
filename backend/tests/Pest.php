@@ -16,7 +16,8 @@ pest()->extend(Tests\TestCase::class)
     ->in(
         'Feature',
         '../app/Timer/tests/Feature',
-        '../app/Project/tests/Feature'
+        '../app/Project/tests/Feature',
+        '../app/Task/tests/Feature',
     );
 
 /*

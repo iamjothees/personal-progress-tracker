@@ -12,6 +12,7 @@
             <directory>tests/Feature</directory>
             <directory>app/Timer/tests/Feature</directory>
             <directory>app/Project/tests/Feature</directory>
+            <directory>app/Task/tests/Feature</directory>
         </testsuite>
     </testsuites>
     <source>
