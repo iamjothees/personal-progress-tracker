@@ -1,17 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Models\Timer;
 use App\Models\TimerActivity;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection AS EloquentCollection;
 use Illuminate\Support\Facades\Validator;
 
 class TimerService
 {
-    public function __construct()
-    {
-        //
+    public function __construct() {}
+
+    public function getTimers(User $owner, bool $withCompleted = false): EloquentCollection{
+        $timers = $owner->timers()
+            ->when( $withCompleted === false, fn ($q) => $q->whereNull('completed_at') )
+            ->get();
+
+        return $timers;
     }
 
     public function startTimer(User $owner): Timer{
