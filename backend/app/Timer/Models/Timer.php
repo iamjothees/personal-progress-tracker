@@ -24,8 +24,7 @@ class Timer extends Model
 
     protected $with = ['activities', 'latestActivity'];
 
-    protected static function newFactory(): TimerFactory
-    {
+    protected static function newFactory(): TimerFactory{
         return TimerFactory::new();
     }
 
