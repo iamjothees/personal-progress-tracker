@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('owner_id')->constrained('users')->restrictOnDelete();
             $table->timestamp('started_at');
-            $table->timestamp('completed_at')->nullable();
+            $table->timestamp('stopped_at')->nullable();
             $table->timestamps();
         });
 

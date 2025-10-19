@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Timer\Models;
 
+use App\Models\User;
+use App\Timer\Models\TimerActivity;
+use Database\Factories\TimerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +15,7 @@ class Timer extends Model
 
     protected $casts = [
         'started_at' => 'datetime:d-M-y h:i:s a',
-        'completed_at' => 'datetime:d-M-y h:i:s a',
+        'stopped_at' => 'datetime:d-M-y h:i:s a',
         'created_at' => 'datetime:d-M-y h:i:s a',
         'updated_at' => 'datetime:d-M-y h:i:s a',
     ];
@@ -20,6 +23,11 @@ class Timer extends Model
     protected $guarded = [];
 
     protected $with = ['activities', 'latestActivity'];
+
+    protected static function newFactory(): TimerFactory
+    {
+        return TimerFactory::new();
+    }
 
     public function owner(){
         return $this->belongsTo(User::class, 'owner_id');

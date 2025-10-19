@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Policies;
+namespace App\Timer\Policies;
 
-use App\Models\Timer;
+use App\Timer\Models\Timer;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -13,7 +13,7 @@ class TimerPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**

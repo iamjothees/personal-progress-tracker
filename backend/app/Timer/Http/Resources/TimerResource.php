@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Timer\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,7 +18,7 @@ class TimerResource extends JsonResource
             'id' => $this->id,
             'owner' => $this->owner,
             'started_at' => $this->started_at,
-            'completed_at' => $this->completed_at,
+            'stopped_at' => $this->stopped_at,
             'latestActivity' => $this->latestActivity,
             'activities' => $this->whenLoaded('activities', $this->activities),
             'created_at' => $this->created_at,
