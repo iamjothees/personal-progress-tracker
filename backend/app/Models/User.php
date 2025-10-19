@@ -38,7 +38,7 @@ class User extends Authenticatable
         return $this->hasMany(Timer::class, 'owner_id');
     }
 
-    public function projects(){
+    public function participatingProjects(){
         return $this->belongsToMany(Project::class, 'project_participant', foreignPivotKey: 'participant_id');
     }
 

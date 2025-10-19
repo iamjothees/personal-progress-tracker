@@ -33,8 +33,8 @@ test('a user can retrieve a list of their own projects', function () {
 
     $project1 = Project::factory()->create(['name' => 'Project 1']);
     $project2 = Project::factory()->create(['name' => 'Project 2']);
-    $user->projects()->attach($project1->id);
-    $user->projects()->attach($project2->id);
+    $user->participatingProjects()->attach($project1->id);
+    $user->participatingProjects()->attach($project2->id);
 
     $response = $this->getJson('/api/projects');
 
@@ -47,7 +47,7 @@ test('a user can retrieve a list of their own projects', function () {
 test('a user can view a single project they own', function () {
     $user = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Owned Project']);
-    $user->projects()->attach($project->id);
+    $user->participatingProjects()->attach($project->id);
     $this->actingAs($user);
 
     $response = $this->getJson("/api/projects/{$project->id}");
@@ -86,7 +86,7 @@ test('users cannot update projects belonging to other users', function () {
     $userA = User::factory()->create();
     $userB = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Other User Project']);
-    $userA->projects()->attach($project->id);
+    $userA->participatingProjects()->attach($project->id);
     $this->actingAs($userB);
 
     $this->putJson("/api/projects/{$project->id}", ['name' => 'Attempted Update'])->assertForbidden();
@@ -95,7 +95,7 @@ test('users cannot update projects belonging to other users', function () {
 test('a user can delete a project they own', function () {
     $user = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Project to Delete']);
-    $user->projects()->attach($project->id);
+    $user->participatingProjects()->attach($project->id);
     $this->actingAs($user);
 
     $response = $this->deleteJson("/api/projects/{$project->id}");
@@ -108,7 +108,7 @@ test('users cannot delete projects belonging to other users', function () {
     $userA = User::factory()->create();
     $userB = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Other User Project']);
-    $userA->projects()->attach($project->id);
+    $userA->participatingProjects()->attach($project->id);
     $this->actingAs($userB);
 
     $this->deleteJson("/api/projects/{$project->id}")->assertForbidden();
