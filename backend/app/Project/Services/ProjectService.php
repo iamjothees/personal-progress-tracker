@@ -31,5 +31,10 @@ class ProjectService
         $project->delete();
         return $project;
     }
+
+    public function addExistingTasks(Project $project, array $taskIds){
+        $project->tasks()->syncWithoutDetaching($taskIds);
+        return $project;
+    }
 }
 

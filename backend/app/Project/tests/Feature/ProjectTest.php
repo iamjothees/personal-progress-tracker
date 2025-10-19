@@ -2,6 +2,7 @@
 
 use App\Project\Models\Project;
 use App\Models\User;
+use App\Task\Models\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -27,7 +28,7 @@ test('users can create a project', function () {
     ]);
 });
 
-test('a user can retrieve a list of their own projects', function () {
+test('a user can retrieve a list of their participating projects', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -44,7 +45,7 @@ test('a user can retrieve a list of their own projects', function () {
     $response->assertJsonPath('projects.1.name', 'Project 2');
 });
 
-test('a user can view a single project they own', function () {
+test('a user can view a single project they participating', function () {
     $user = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Owned Project']);
     $user->participatingProjects()->attach($project->id);
@@ -56,7 +57,7 @@ test('a user can view a single project they own', function () {
     $response->assertJsonPath('project.name', 'Owned Project');
 });
 
-test('users cannot view projects belonging to other users', function () {
+test('users cannot view non participating projects', function () {
     $userA = User::factory()->create();
     $userB = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Other User Project']);
@@ -66,7 +67,7 @@ test('users cannot view projects belonging to other users', function () {
     $this->getJson("/api/projects/{$project->id}")->assertForbidden();
 });
 
-test('a user can update a project they own', function () {
+test('a user can update a project they participating', function () {
     $user = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Old Project Name']);
     $project->participants()->attach($user->id);
@@ -82,7 +83,7 @@ test('a user can update a project they own', function () {
     ]);
 });
 
-test('users cannot update projects belonging to other users', function () {
+test('users cannot update non participating projects', function () {
     $userA = User::factory()->create();
     $userB = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Other User Project']);
@@ -92,7 +93,7 @@ test('users cannot update projects belonging to other users', function () {
     $this->putJson("/api/projects/{$project->id}", ['name' => 'Attempted Update'])->assertForbidden();
 });
 
-test('a user can delete a project they own', function () {
+test('a user can delete a project they participating', function () {
     $user = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Project to Delete']);
     $user->participatingProjects()->attach($project->id);
@@ -104,7 +105,7 @@ test('a user can delete a project they own', function () {
     $this->assertSoftDeleted('projects', ['id' => $project->id]);
 });
 
-test('users cannot delete projects belonging to other users', function () {
+test('users cannot delete non participating projects', function () {
     $userA = User::factory()->create();
     $userB = User::factory()->create();
     $project = Project::factory()->create(['name' => 'Other User Project']);
@@ -112,4 +113,20 @@ test('users cannot delete projects belonging to other users', function () {
     $this->actingAs($userB);
 
     $this->deleteJson("/api/projects/{$project->id}")->assertForbidden();
+});
+
+test("a user can add existing tasks to a project they participating", function () {
+    $user = User::factory()->create();
+    $project = Project::factory()->create(['name' => 'Project with Existing Tasks']);
+    $user->participatingProjects()->attach($project->id);
+    $this->actingAs($user);
+
+    $task1 = Task::factory()->create(['title' => 'Task 1']);
+    $task2 = Task::factory()->create(['title' => 'Task 2']);
+    
+    $response = $this->postJson("/api/projects/{$project->id}/tasks", ['tasks' => [$task1->id, $task2->id]]);
+
+    $response->assertOk();
+    $response->assertJsonPath('project.tasks.0.title', 'Task 1');
+    $response->assertJsonPath('project.tasks.1.title', 'Task 2');
 });

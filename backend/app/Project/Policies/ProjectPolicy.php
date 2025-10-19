@@ -63,4 +63,9 @@ class ProjectPolicy
     {
         return $project->participants()->where('participant_id', $user->id)->exists(); 
     }
+
+    public function addTasks(User $user, Project $project): bool
+    {
+        return $project->participants()->where('participant_id', $user->id)->exists(); 
+    }
 }

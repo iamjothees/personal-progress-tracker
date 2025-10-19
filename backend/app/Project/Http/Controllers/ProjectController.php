@@ -4,6 +4,7 @@ namespace App\Project\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
+use App\Project\Http\Requests\AddExistingTasksRequest;
 use App\Project\Http\Requests\ProjectRequest;
 use App\Project\Models\Project;
 use App\Project\Services\ProjectService;
@@ -34,5 +35,10 @@ class ProjectController extends Controller
     public function destroy(Project $project): ApiResponse{
         $this->projectService->delete(project: $project);
         return new ApiResponse();
+    }
+
+    public function addExistingTasks(AddExistingTasksRequest $request, Project $project): ApiResponse{
+        $this->projectService->addExistingTasks(project: $project, taskIds: $request->validated()['tasks']);
+        return new ApiResponse(data: ['project' => $project->toResource()]);
     }
 }
