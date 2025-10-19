@@ -11,6 +11,7 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
             <directory>app/Timer/tests/Feature</directory>
+            <directory>app/Project/tests/Feature</directory>
         </testsuite>
     </testsuites>
     <source>

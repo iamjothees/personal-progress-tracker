@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Project\Models\Project;
 use App\Timer\Models\Timer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,5 +35,9 @@ class User extends Authenticatable
 
     public function timers(){
         return $this->hasMany(Timer::class, 'owner_id');
+    }
+
+    public function projects(){
+        return $this->belongsToMany(Project::class, 'project_participant', foreignPivotKey: 'participant_id');
     }
 }

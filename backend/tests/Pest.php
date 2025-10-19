@@ -13,7 +13,11 @@
 
 pest()->extend(Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature', '../app/Timer/tests/Feature');
+    ->in(
+        'Feature',
+        '../app/Timer/tests/Feature',
+        '../app/Project/tests/Feature'
+    );
 
 /*
 |--------------------------------------------------------------------------

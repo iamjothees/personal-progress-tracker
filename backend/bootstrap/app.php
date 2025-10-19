@@ -14,7 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function () {
             Route::middleware('api')
                 ->prefix('api')
-                ->group(base_path('app/Timer/routes.php'));
+                ->group([
+                    base_path('app/Timer/routes.php'),
+                    base_path('app/Project/routes.php')
+                ]);
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
