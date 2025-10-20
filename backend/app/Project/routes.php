@@ -16,9 +16,5 @@ Route::middleware('auth:sanctum')->group(function(){
             ->can('update', 'project');
         Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('.destroy')
             ->can('delete', 'project');
-        
-        Route::post('/{project}/tasks', [ProjectController::class, 'addExistingTasks'])->name('.addExistingTasks')
-            ->can('addTasks', 'project');
-
     });
 });
