@@ -4,7 +4,6 @@ namespace App\Project\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Project\Models\Project;
 
 class ProjectResource extends JsonResource
 {
@@ -19,6 +18,7 @@ class ProjectResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'tasks' => $this->whenLoaded('tasks', $this->tasks),
+            'timers' => $this->whenLoaded('timers', $this->timers),
             'participants' => $this->whenLoaded('participants', $this->participants),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

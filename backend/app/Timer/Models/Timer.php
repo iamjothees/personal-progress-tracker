@@ -3,7 +3,6 @@
 namespace App\Timer\Models;
 
 use App\Models\User;
-use App\Timer\Models\TimerActivity;
 use Database\Factories\TimerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,19 +23,28 @@ class Timer extends Model
 
     protected $with = ['activities', 'latestActivity'];
 
-    protected static function newFactory(): TimerFactory{
+    protected static function newFactory(): TimerFactory
+    {
         return TimerFactory::new();
     }
 
-    public function owner(){
+    public function owner()
+    {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function activities(){
+    public function activities()
+    {
         return $this->hasMany(TimerActivity::class);
     }
 
-    public function latestActivity(){
+    public function latestActivity()
+    {
         return $this->hasOne(TimerActivity::class)->latestOfMany();
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(\App\Project\Models\Project::class, 'project_timer');
     }
 }

@@ -2,17 +2,21 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectTaskController;
+use App\Http\Controllers\ProjectTimerController;
 use App\Models\ProjectTask;
+use App\Models\ProjectTimer;
 use Illuminate\Support\Facades\Route;
-
 
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
     Route::delete('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
 
     Route::post('projects/{project}/tasks', [ProjectTaskController::class, 'addExistingTasks'])->name('.addExistingTasks')
-            ->can('addTasks', [ ProjectTask::class, 'project' ]);
+        ->can('addTasks', [ProjectTask::class, 'project']);
+
+    Route::post('projects/{project}/timers', [ProjectTimerController::class, 'addExistingTimers'])->name('.addExistingTimers')
+        ->can('addTimers', [ProjectTimer::class, 'project']);
 });
