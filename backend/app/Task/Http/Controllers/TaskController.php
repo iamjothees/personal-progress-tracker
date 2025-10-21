@@ -18,7 +18,7 @@ class TaskController extends Controller
     }
 
     public function store(TaskRequest $request): ApiResponse{
-        $task = $this->taskService->create(data: $request->validated());
+        $task = $this->taskService->create(data: $request->validated(), participant: auth()->user());
         return new ApiResponse(data: ['task' => $task->toResource()]);
     }
 

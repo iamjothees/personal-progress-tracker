@@ -2,6 +2,7 @@
 
 namespace App\Task\Services;
 
+use App\Models\User;
 use App\Task\Models\Task;
 
 class TaskService
@@ -16,9 +17,11 @@ class TaskService
         return Task::paginate(perPage: $limit, page: $page);
     }
 
-    public function create(array $data)
+    public function create(array $data, User $participant)
     {
-        return Task::create($data);
+        $task = Task::create($data);
+        $task->participants()->attach($participant);
+        return $task;
     }
 
     public function update(Task $task, array $data)

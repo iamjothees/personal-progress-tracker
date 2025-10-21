@@ -27,7 +27,7 @@ test('users can create a task', function () {
     ]);
 });
 
-test('a user can retrieve a list of their own tasks', function () {
+test('a user can retrieve a list of their participating tasks', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -44,7 +44,7 @@ test('a user can retrieve a list of their own tasks', function () {
     $response->assertJsonPath('tasks.1.title', 'Task 2');
 });
 
-test('a user can view a single task they own', function () {
+test('a user can view a single task they participating', function () {
     $user = User::factory()->create();
     $task = Task::factory()->create(['title' => 'Owned Task']);
     $user->participatingTasks()->attach($task->id);
@@ -66,7 +66,7 @@ test('users cannot view tasks belonging to other users', function () {
     $this->getJson("/api/tasks/{$task->id}")->assertForbidden();
 });
 
-test('a user can update a task they own', function () {
+test('a user can update a task they participating', function () {
     $user = User::factory()->create();
     $task = Task::factory()->create(['title' => 'Old Task Title']);
     $user->participatingTasks()->attach($task->id);
@@ -92,7 +92,7 @@ test('users cannot update tasks belonging to other users', function () {
     $this->putJson("/api/tasks/{$task->id}", ['title' => 'Attempted Update'])->assertForbidden();
 });
 
-test('a user can delete a task they own', function () {
+test('a user can delete a task they participating', function () {
     $user = User::factory()->create();
     $task = Task::factory()->create(['title' => 'Task to Delete']);
     $user->participatingTasks()->attach($task->id);
