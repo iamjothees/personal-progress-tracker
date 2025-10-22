@@ -36,4 +36,9 @@ class ProjectController extends Controller
         $this->projectService->delete(project: $project);
         return new ApiResponse();
     }
+
+    public function addExistingTasks(AddExistingTasksRequest $request, Project $project): ApiResponse{
+        $this->projectService->addExistingTasks(project: $project, taskIds: $request->validated()['tasks']);
+        return new ApiResponse(data: ['project' => $project->toResource()]);
+    }
 }
