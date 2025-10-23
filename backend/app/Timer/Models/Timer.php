@@ -2,7 +2,10 @@
 
 namespace App\Timer\Models;
 
+use App\Models\TimerMatrix;
 use App\Models\User;
+use App\Project\Models\Project;
+use App\Task\Models\Task;
 use App\Timer\Models\TimerActivity;
 use Database\Factories\TimerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,5 +41,25 @@ class Timer extends Model
 
     public function latestActivity(){
         return $this->hasOne(TimerActivity::class)->latestOfMany();
+    }
+
+    public function matrices(){
+        return $this->hasMany(TimerMatrix::class)->with('timeTrackable');
+    }
+
+    public function projects(){
+        return $this->morphedByMany(
+            Project::class,
+            'trackables',
+            'timer_matrix',
+        );
+    }
+
+    public function tasks(){
+        return $this->morphedByMany(
+            Task::class,
+            'trackables',
+            'timer_matrix',
+        );
     }
 }

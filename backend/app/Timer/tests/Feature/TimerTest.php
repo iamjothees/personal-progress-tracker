@@ -2,6 +2,8 @@
 
 use App\Timer\Models\Timer;
 use App\Models\User;
+use App\Project\Models\Project;
+use App\Task\Models\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -192,4 +194,87 @@ test('a user cannot stop an already stopped timer', function () {
 
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors('timer');
+});
+
+test('a user can add trackables to a timer', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create();
+    $project = Project::factory()->create();
+    $task = Task::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->postJson("/api/timers/{$timer->id}/time-trackables", [
+        'time_trackables' => [
+            ['type' => 'project', 'id' => $project->id],
+            ['type' => 'task', 'id' => $task->id],
+        ],
+    ]);
+
+    $response->assertOk();
+
+    $this->assertDatabaseHas('timer_matrix', [
+        'timer_id' => $timer->id,
+        'time_trackable_type' => $project->getMorphClass(),
+        'time_trackable_id' => $project->id,
+    ]);
+
+    $this->assertDatabaseHas('timer_matrix', [
+        'timer_id' => $timer->id,
+        'time_trackable_type' => $task->getMorphClass(),
+        'time_trackable_id' => $task->id,
+    ]);
+});
+
+test('a user cannot add time-trackables with an invalid type', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create();
+    $this->actingAs($user);
+
+    $response = $this->postJson("/api/timers/{$timer->id}/time-trackables", [
+        'time_trackables' => [
+            ['type' => 'invalid-type', 'id' => 1],
+        ],
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors(['time_trackables.0.type']);
+});
+
+test('a user cannot add time-trackables with a non-existent id', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create();
+    $this->actingAs($user);
+
+    $response = $this->postJson("/api/timers/{$timer->id}/time-trackables", [
+        'time_trackables' => [
+            ['type' => 'project', 'id' => 999],
+        ],
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors(['time_trackables.0.id']);
+});
+
+test('timer related models are loaded', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create();
+    $project = Project::factory()->create();
+    $task = Task::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->postJson("/api/timers/{$timer->id}/time-trackables", [
+        'time_trackables' => [
+            ['type' => 'project', 'id' => $project->id],
+            ['type' => 'task', 'id' => $task->id],
+        ],
+    ]);
+
+    $response->assertOk();
+
+    $timer->load('matrices.timeTrackable');
+
+    $this->assertTrue($timer->matrices->contains('timeTrackable.id', $project->id));
+    $this->assertTrue($timer->matrices->contains('timeTrackable.id', $task->id));
 });

@@ -68,4 +68,9 @@ class TimerPolicy
     {
         return $timer === null || $timer->owner_id === $user->id;
     }
+
+    public function addTimeTrackables(User $user, Timer $timer): bool
+    {
+        return $timer->owner_id === $user->id;
+    }
 }

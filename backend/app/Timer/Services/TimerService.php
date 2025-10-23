@@ -95,4 +95,21 @@ class TimerService
 
         return $timer->fresh();
     }
+
+    public function addTimeTrackables(Timer $timer, array $timeTrackables): Timer{
+        $timer->matrices()->upsert(
+            collect($timeTrackables)->map(fn ($timeTrackable) => [
+                'time_trackable_type' => $timeTrackable['type'],
+                'time_trackable_id' => $timeTrackable['id'],
+                'timer_id' => $timer->id,
+            ])->toArray(),
+            [
+                'time_trackable_type',
+                'time_trackable_id',
+                'timer_id',
+            ],
+        );
+
+        return $timer->load('matrices.timeTrackable');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Timer\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Timer\Exceptions\TimerActionException;
+use App\Timer\Http\Requests\AddTrackablesRequest;
 use App\Timer\Http\Requests\PauseTimerRequest;
 use App\Timer\Http\Requests\ResumeTimerRequest;
 use App\Timer\Models\Timer;
@@ -54,6 +55,16 @@ class TimerController extends Controller
     public function stop(Timer $timer): ApiResponse{
         try {
             $timer = $this->timerService->stopTimer(timer: $timer);
+        } catch (TimerActionException $e) {
+            throw ValidationException::withMessages(['timer' => $e->getMessage()]);
+        }
+
+        return new ApiResponse(data: ['timer' => $timer->toResource()]);
+    }
+
+    public function addTimeTrackables(AddTrackablesRequest $request, Timer $timer): ApiResponse{
+        try {
+            $timer = $this->timerService->addTimeTrackables(timer: $timer, timeTrackables: $request->validated('time_trackables'));
         } catch (TimerActionException $e) {
             throw ValidationException::withMessages(['timer' => $e->getMessage()]);
         }
