@@ -14,6 +14,20 @@ class TimerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $projects = $this->whenLoaded(
+            'projects', 
+            function (){
+                $projects = $this->projects;
+                $taskProjects = $this->whenLoaded(
+                    'tasks', 
+                    fn() => $this->tasks->pluck('projects')->flatten(), 
+                    collect()
+                );
+                return $projects->merge($taskProjects)->unique('id')->toResourceCollection();
+            }
+        );
+
+        $tasks = $this->whenLoaded('tasks', $this->tasks->toResourceCollection());
         return [
             'id' => $this->id,
             'owner' => $this->owner,
@@ -21,6 +35,8 @@ class TimerResource extends JsonResource
             'stopped_at' => $this->stopped_at,
             'latestActivity' => $this->latestActivity,
             'activities' => $this->whenLoaded('activities', $this->activities),
+            'projects' => $projects,
+            'tasks' => $tasks,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

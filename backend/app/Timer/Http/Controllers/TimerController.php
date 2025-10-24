@@ -23,6 +23,7 @@ class TimerController extends Controller
     }
 
     public function view(Timer $timer): ApiResponse{
+        $timer->load('projects', 'tasks');
         return new ApiResponse(data: ['timer' => $timer->toResource()]);
     }
 

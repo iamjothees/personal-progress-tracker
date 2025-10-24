@@ -278,3 +278,47 @@ test('timer related models are loaded', function () {
     $this->assertTrue($timer->matrices->contains('timeTrackable.id', $project->id));
     $this->assertTrue($timer->matrices->contains('timeTrackable.id', $task->id));
 });
+
+test('timer resource includes related projects and tasks', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create();
+    $project1 = Project::factory()->create();
+    $project2 = Project::factory()->create();
+    $task = Task::factory()->create();
+
+    $timer->projects()->attach($project1);
+    $timer->tasks()->attach($task);
+    $task->projects()->attach($project2);
+
+    $this->actingAs($user);
+
+    $response = $this->getJson("/api/timers/{$timer->id}");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'timer.projects');
+    $response->assertJsonPath('timer.projects.0.id', $project1->id);
+    $response->assertJsonPath('timer.projects.1.id', $project2->id);
+    $response->assertJsonCount(1, 'timer.tasks');
+    $response->assertJsonPath('timer.tasks.0.id', $task->id);
+});
+
+test('timer resource includes unique related projects and tasks', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create();
+    $project = Project::factory()->create();
+    $task = Task::factory()->create();
+
+    $timer->projects()->attach($project);
+    $timer->tasks()->attach($task);
+    $task->projects()->attach($project);
+
+    $this->actingAs($user);
+
+    $response = $this->getJson("/api/timers/{$timer->id}");
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'timer.projects');
+    $response->assertJsonPath('timer.projects.0.id', $project->id);
+    $response->assertJsonCount(1, 'timer.tasks');
+    $response->assertJsonPath('timer.tasks.0.id', $task->id);
+});

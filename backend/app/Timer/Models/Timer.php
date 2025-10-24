@@ -50,7 +50,7 @@ class Timer extends Model
     public function projects(){
         return $this->morphedByMany(
             Project::class,
-            'trackables',
+            'time_trackable',
             'timer_matrix',
         );
     }
@@ -58,7 +58,7 @@ class Timer extends Model
     public function tasks(){
         return $this->morphedByMany(
             Task::class,
-            'trackables',
+            'time_trackable',
             'timer_matrix',
         );
     }
