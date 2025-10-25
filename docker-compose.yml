@@ -9,6 +9,9 @@ services:
       - 4100:80
       - 4102:5173
       - 4103:4173
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    working_dir: /app
   db:
     container_name: ppt-db
     image: mysql:8.0
