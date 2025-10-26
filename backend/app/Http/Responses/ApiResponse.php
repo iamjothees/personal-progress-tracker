@@ -4,11 +4,13 @@ namespace App\Http\Responses;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Arr;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class ApiResponse implements Responsable
 {
     protected ?array $data = null;
     protected int $httpCode = 200;
+    protected ?Cookie $cookie = null;
 
     public function __construct(?array $data = null, int $httpCode = 200)
     {
@@ -22,12 +24,24 @@ class ApiResponse implements Responsable
         }
     }
 
+    public function withCookie(Cookie $cookie): self
+    {
+        $this->cookie = $cookie;
+        return $this;
+    }
+
     public function toResponse($request): \Illuminate\Http\JsonResponse
     {
-        return response()->json(
+        $response = response()->json(
             data: $this->data,
             status: $this->httpCode,
             options: JSON_UNESCAPED_UNICODE
         );
+
+        if ($this->cookie !== null) {
+            $response = $response->withCookie(cookie: $this->cookie);
+        }
+
+        return $response;
     }
 }
