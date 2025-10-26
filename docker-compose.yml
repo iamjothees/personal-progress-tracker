@@ -4,14 +4,14 @@ services:
     image: progress-tracker:latest
     volumes:
       - ./backend:/var/www/html
-      - ./frontend:/app
+      - ./frontend:/usr/src/app
     ports:
       - 4100:80
       - 4102:5173
       - 4103:4173
     environment:
       - CHOKIDAR_USEPOLLING=true
-    working_dir: /app
+    working_dir: /usr/src/app
   db:
     container_name: ppt-db
     image: mysql:8.0
