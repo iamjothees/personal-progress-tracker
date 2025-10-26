@@ -4,5 +4,5 @@ export default [
     index("routes/home.jsx"),
     
     route("dashboard", "screens/dashboard.jsx"),
-
+    route("login", "screens/login.jsx"),
 ];

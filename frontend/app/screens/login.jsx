@@ -1,8 +1,11 @@
+import { Button } from "@/components/ui/button";
 import useFetcher from "@/hooks/useFetcher";
+import api from "@/services/api";
 import { useEffect } from "react";
+import { Outlet } from "react-router";
 
-export default function Dashboard() {
-    const { data, loading, error } = useFetcher({url: '/timers' });
+export default function Login() {
+    const { data, loading, error } = useFetcher({url: '/login', method: 'post', data: { email: 'iamjothees@gmail.com', password: 'joe@dev' }});
 
     useEffect(() => {
         console.log({data, loading, error});
@@ -16,7 +19,7 @@ export default function Dashboard() {
                 error && "Error"
             }
             {
-                data && (data.length > 0 ? data.map(timer => <li key={timer.id}>{timer.name}</li>) : "No timers started yet")
+                data && "Hey Joe"
             }
         </div>
 );
