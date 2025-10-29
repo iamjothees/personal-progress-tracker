@@ -1,22 +1,18 @@
-import useFetcher from "@/hooks/useFetcher";
-import { useEffect } from "react";
+import useFetcher from "@/shared/hooks/useFetcher";
 
 export default function Dashboard() {
-    const { data, loading, error } = useFetcher({url: '/timers' });
+    const fetcher = useFetcher({url: '/timers' });
 
-    useEffect(() => {
-        console.log({data, loading, error});
-    }, [data, loading, error]);
     return (
         <div>
             {
-                loading && "Loading..."
+                fetcher.loading && "Loading..."
             }
             {
-                error && "Error"
+                fetcher.error && "Error"
             }
             {
-                data && (data.length > 0 ? data.map(timer => <li key={timer.id}>{timer.name}</li>) : "No timers started yet")
+                fetcher.data && (fetcher.data.length > 0 ? fetcher.data.map(timer => <li key={timer.id}>{timer.name}</li>) : "No timers started yet")
             }
         </div>
 );

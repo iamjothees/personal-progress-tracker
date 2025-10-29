@@ -1,15 +1,9 @@
-import { Button } from "@/components/ui/button";
-import useFetcher from "@/hooks/useFetcher";
-import api from "@/services/api";
-import { useEffect } from "react";
-import { Outlet } from "react-router";
+import useFetcher from "@/shared/hooks/useFetcher";
 
 export default function Login() {
-    const { data, loading, error } = useFetcher({url: '/login', method: 'post', data: { email: 'iamjothees@gmail.com', password: 'joe@dev' }});
+    // const { data, loading, error } = useFetcher({url: '/login', method: 'post', data: { email: 'iamjothees@gmail.com', password: 'joe@dev' }});
+    const { data, loading, error } = {data: true, loading: false, error: false};
 
-    useEffect(() => {
-        console.log({data, loading, error});
-    }, [data, loading, error]);
     return (
         <div>
             {
