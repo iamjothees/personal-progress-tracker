@@ -38,7 +38,7 @@ class AuthController extends Controller
     }
 
     public function logout(): ApiResponse{
-        auth()->user()->tokens()->delete();
+        auth()->user()->currentAccessToken()->delete();
         return new ApiResponse(data: ['success' => true]);
     }
 }

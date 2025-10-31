@@ -1,14 +1,22 @@
 import { isRouteErrorResponse, Outlet } from "react-router";
 import ApiPreflight from "@/core/http/apiPreflight";
-import { AuthProvider } from "@/core/auth/auth.context";
+import { ScreenContextProvider } from "./contexts/ScreenContext";
+import { ToastProvider } from "./contexts/ToastContext";
+import AuthProvider from "./core/auth/auth.context";
 
 const App = function() {
   return (
-      <ApiPreflight>
-        <AuthProvider>
-          <Outlet />
-        </AuthProvider>
-      </ApiPreflight>
+    <ApiPreflight>
+      <ScreenContextProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <main className="">
+              <Outlet />
+            </main>
+          </AuthProvider>
+        </ToastProvider>
+      </ScreenContextProvider>
+    </ApiPreflight>
   );
 }
 

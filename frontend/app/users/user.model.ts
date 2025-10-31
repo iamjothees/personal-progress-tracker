@@ -20,7 +20,7 @@ export class UserModel {
         if (!json.name) {
             throw new Error("Name is required");
         }
-        if (json.email) {
+        if (!json.email) {
             throw new Error("Email is required");
         }
 

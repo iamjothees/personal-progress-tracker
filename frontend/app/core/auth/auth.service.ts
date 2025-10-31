@@ -1,5 +1,6 @@
 import { UserModel } from "@/users/user.model";
 import api from "../http/api";
+import { User } from "lucide-react";
 
 interface Credentials {
     email: string;
@@ -13,9 +14,12 @@ interface SignupData {
 }
 
 export const getCurrentUser = async (): Promise<UserModel | null> => {
-    return api.get("/profile")
+    return await api.get("/profile")
         .then((response) => UserModel.fromJson(response.data.user))
-        .catch(() => null);
+        .catch((error) => {
+            console.error("Error getting current user", error);
+            return null;
+        });
 };
 
 export const isLoggedIn = async (): Promise<boolean> => {
