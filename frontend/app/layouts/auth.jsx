@@ -1,6 +1,6 @@
+import logo from '@/shared/app-specific/logo';
 import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router'
-import logo from '@/../public/logo.png';
 
 export default function AuthLayout() {
     const [animate, setAnimate] = useState(false);

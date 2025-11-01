@@ -1,4 +1,4 @@
-import logo from '@/../public/logo.png';
+import logo from "@/shared/app-specific/logo";
 
 export default function Bootstrapping() {
     return <Layout />
