@@ -14,7 +14,8 @@ import {
 import { Input } from "@/shared/components/ui/input";
 import { useNavigate } from "react-router";
 import { useToast } from "@/contexts/ToastContext";
-import { useAuth } from "@/core/auth/auth.context";
+import { useAuth } from "@/core/auth/auth.provider";
+import LoadingText from "@/shared/components/ui/loadingText";
 
 const formSchema = z.object({
   email: z.string().min(1, { message: "Email is required" }).email("Please enter a valid email address"),
@@ -59,7 +60,7 @@ export default function Login() {
     <div className="container mx-auto flex items-center justify-center min-h-[80vh]">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold">Login</h2>
+          <h2 className="display-text text-3xl">Login</h2>
           <p className="mt-2 text-muted-foreground">Enter your credentials to continue</p>
         </div>
         
@@ -99,7 +100,7 @@ export default function Login() {
             />
             
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? <LoadingText text="Signing in" /> : "Sign in"}
             </Button>
           </form>
         </Form>

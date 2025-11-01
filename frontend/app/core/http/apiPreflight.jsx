@@ -1,3 +1,5 @@
+import BootstrapError from "@/shared/components/app-specific/bootstrapError";
+import Bootstrapping from "@/shared/components/app-specific/bootstrapping";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -30,8 +32,8 @@ export default function ApiPreflight({ children }) {
   }, []);
   return (
     <>
-      { preflightSuccess === null && <>Loading...</> }
-      { preflightSuccess === false && <>Error</> }
+      { preflightSuccess === null && <Bootstrapping /> }
+      { preflightSuccess === false && <BootstrapError /> }
       { preflightSuccess === true && children }
     </>
   );

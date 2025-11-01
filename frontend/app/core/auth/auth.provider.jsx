@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import authService from '@/core/auth/auth.service';
 import { useLocation, useNavigate } from 'react-router';
-
+import Bootstrapping from '@/shared/components/app-specific/bootstrapping';
 const AuthContext = createContext();
 
 export default function AuthProvider({children}) {
@@ -67,9 +67,9 @@ export default function AuthProvider({children}) {
         <AuthContext.Provider value={{ user, setUser, login, logout, signup }}>
             {
                 (user === undefined)
-                    ? "Authenticating..."
+                    ? <Bootstrapping />
                     : (((isAuthRoute && user) || (isAuthRoute === false && user === null))
-                        ? "Redirecting..."
+                        ? <Bootstrapping />
                         : children)
             }
             
