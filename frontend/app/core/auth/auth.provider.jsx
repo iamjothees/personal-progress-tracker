@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import authService from '@/core/auth/auth.service';
 import { useLocation, useNavigate } from 'react-router';
-import Bootstrapping from '@/shared/components/app-specific/bootstrapping';
+import Bootstrapping from '@/shared/components/ui/bootstrapping';
 const AuthContext = createContext();
 
 export default function AuthProvider({children}) {

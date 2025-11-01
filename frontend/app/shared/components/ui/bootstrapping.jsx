@@ -1,5 +1,4 @@
 import logo from '@/../public/logo.png';
-import LoadingText from '../ui/loadingText';
 
 export default function Bootstrapping() {
     return (

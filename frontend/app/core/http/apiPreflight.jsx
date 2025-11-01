@@ -1,5 +1,5 @@
-import BootstrapError from "@/shared/components/app-specific/bootstrapError";
-import Bootstrapping from "@/shared/components/app-specific/bootstrapping";
+import BootstrapError from "@/shared/components/ui/bootstrapError";
+import Bootstrapping from "@/shared/components/ui/bootstrapping";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
