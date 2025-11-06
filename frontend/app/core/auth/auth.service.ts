@@ -1,5 +1,5 @@
 import { UserModel } from "@/users/user.model";
-import api from "../http/api";
+import api from "@/core/http/api";
 import { User } from "lucide-react";
 
 interface Credentials {
@@ -41,24 +41,24 @@ export const login = async (credentials: Credentials): Promise<UserModel> => {
                         return reject({ message: error.response.data.message, cause: { name: "UnprocessableEntity" } });
                     }
 
-                    throw error;
+                    reject(error);
                 }
             );
     });
 }
 
-export const signup = async (signupData: SignupData): Promise<UserModel> => {
+export const signup = async (signupData: SignupData): Promise<void> => {
     return new Promise((resolve, reject) => {
 
         api.post("/register", {...signupData, password_confirmation: signupData.password})
-            .then(async () => resolve(await login({ email: signupData.email, password: signupData.password })))
+            .then(()=>resolve())
             .catch(
                 (error) => {
                     if (error.response?.status === 422){
                         return reject({ message: error.response.data.message, cause: { name: "UnprocessableEntity" } });
                     }
 
-                    throw error;
+                    reject(error);
                 }
             );
     });

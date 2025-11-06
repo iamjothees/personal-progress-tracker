@@ -27,7 +27,7 @@ export default function AuthProvider({children}) {
         return new Promise((resolve, reject) => {
             authService.logout()
                 .then(() => {
-                    setUser(undefined);
+                    setUser(null);
                     return resolve(true);
                 })
                 .catch(reject);
@@ -37,11 +37,7 @@ export default function AuthProvider({children}) {
     const signup = (signupUserData) => {
         return new Promise((resolve, reject) => {
             authService.signup(signupUserData)
-                .then((user) => {
-                    setUser(user);
-                    return user;
-                })
-                .then(resolve)
+                .then(() => resolve())
                 .catch(reject);
         });
     };

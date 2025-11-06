@@ -38,7 +38,8 @@ class AuthController extends Controller
     }
 
     public function logout(): ApiResponse{
-        auth()->user()->currentAccessToken()->delete();
-        return new ApiResponse(data: ['success' => true]);
+        auth('web')->logout();
+        $cookie = Cookie::forget('app_auth', '/', null);
+        return (new ApiResponse(data: ['success' => true]))->withCookie(cookie: $cookie);
     }
 }

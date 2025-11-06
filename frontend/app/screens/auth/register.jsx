@@ -12,26 +12,33 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/core/auth/auth.provider";
 import LoadingText from "@/shared/components/ui/loadingText";
 
 const formSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
   email: z.string().min(1, { message: "Email is required" }).email("Please enter a valid email address"),
   password: z.string().min(1, { message: "Password is required" }).min(8, { message: "Password must be at least 8 characters" }),
+  password_confirmation: z.string().min(1, { message: "Password confirmation is required" }),
+}).refine((data) => data.password === data.password_confirmation, {
+  message: "Passwords don't match",
+  path: ["password_confirmation"],
 });
 
-export default function Login() {
+export default function Register() {
   const [loading, setLoading] = useState(false);
   const [generalError, setGeneralError] = useState("");
-  const { login } = useAuth();
+  const { signup } = useAuth();
   
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      name: "Test User",
+      email: `${Date.now()}@example.com`,
+      password: "test@123",
+      password_confirmation: "test@123",
     },
   });
 
@@ -42,14 +49,21 @@ export default function Login() {
     setLoading(true);
     setGeneralError("");
     
-    login(values)
-      .then((user) => {
-        showToast(`Welcome back! ${user.name}`, "success");
-        navigate("/dashboard");
+    // Remove password_confirmation from the data sent to the server
+    const { password_confirmation, ...userData } = values;
+    
+    signup(userData)
+      .then(() => {
+        showToast(`Your account has been created. Login to get started`, "success");
+        navigate("/login");
       })
       .catch((error) => {
-        // Handle login error - display specific error from auth service
-        setGeneralError(error.message || "An error occurred during login");
+        console.error(error);
+        if (error.cause){
+          setGeneralError(error.message);
+          return;
+        }
+        showToast("Error creating account. Please try again", "error");
       })
       .finally(() => {
         setLoading(false);
@@ -57,11 +71,11 @@ export default function Login() {
   }
 
   return (
-    <div className="container mx-auto flex items-center justify-center min-h-[80vh]">
+    <div className="container mx-auto flex items-center justify-center">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="display-text text-3xl">Login</h2>
-          <p className="mt-2 text-muted-foreground">Enter your credentials to continue</p>
+          <h2 className="display-text text-3xl">Register</h2>
+          <p className="mt-2 text-muted-foreground">Create your account to get started</p>
         </div>
         
         <Form {...form}>
@@ -71,6 +85,21 @@ export default function Login() {
                 {generalError}
               </div>
             )}
+            
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} disabled={loading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
             <FormField
               control={form.control}
               name="email"
@@ -99,14 +128,28 @@ export default function Login() {
               )}
             />
             
+            <FormField
+              control={form.control}
+              name="password_confirmation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} disabled={loading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? <LoadingText text="Signing in" /> : "Sign in"}
+              {loading ? <LoadingText text="Creating account" /> : "Create Account"}
             </Button>
           </form>
         </Form>
         
         <div className="text-center text-sm text-muted-foreground mt-4">
-          <p>Don't have an account? <a href="/register" className="text-primary hover:underline">Sign up</a></p>
+          <p>Already have an account? <Link to="/login" className="text-primary hover:underline">Sign in</Link></p>
         </div>
       </div>
     </div>
