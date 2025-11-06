@@ -16,6 +16,7 @@ import { Link, useNavigate } from "react-router";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/core/auth/auth.provider";
 import LoadingText from "@/shared/components/ui/loadingText";
+import DevLogin from "@/core/auth/components/devLogin";
 
 const formSchema = z.object({
   email: z.string().min(1, { message: "Email is required" }).email("Please enter a valid email address"),
@@ -45,7 +46,7 @@ export default function Login() {
     login(values)
       .then((user) => {
         showToast(`Welcome back! ${user.name}`, "success");
-        navigate("/dashboard");
+        navigate("/");
       })
       .catch((error) => {
         console.error(error);
@@ -106,6 +107,11 @@ export default function Login() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <LoadingText text="Signing in" /> : "Sign in"}
             </Button>
+            {
+              import.meta.env.DEV && (
+                <DevLogin />
+              )
+            }
           </form>
         </Form>
         

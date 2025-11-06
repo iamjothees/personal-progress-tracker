@@ -10,7 +10,7 @@ const App = function() {
       <ScreenContextProvider>
         <ToastProvider>
           <AuthProvider>
-            <main className="">
+            <main className="flex-1 flex flex-col">
               <Outlet />
             </main>
           </AuthProvider>

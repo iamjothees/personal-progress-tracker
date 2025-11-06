@@ -1,6 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 import { X, CheckCircle2, XCircle, Info } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 
 const toastTypes = {
     success: {
@@ -39,11 +40,14 @@ const Toast = ({ message, type, onClose }) => {
     };
 
     return (
-        <div className={cn(
-            'p-4 rounded-lg shadow-lg flex items-center justify-between w-full',
-            bgClass,
-            isVisible ? 'animate-fade-in-up' : 'animate-fade-out-up'
-        )}>
+        <motion.div 
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ y: isVisible ? 0 : -100, opacity: isVisible ? 1 : 0, duration: 5 }}
+            className={cn(
+                'p-4 rounded-lg shadow-lg flex items-center justify-between w-full',
+                bgClass,
+            )}
+        >
             <div className="flex items-center">
                 <Icon className={cn('h-6 w-6 mr-3', iconClass)} />
                 <span className="text-sm font-medium text-gray-800">{message}</span>
@@ -51,7 +55,7 @@ const Toast = ({ message, type, onClose }) => {
             <button onClick={handleClose} className="ml-4 text-gray-500 hover:text-gray-800">
                 <X className="h-5 w-5" />
             </button>
-        </div>
+        </motion.div>
     );
 };
 

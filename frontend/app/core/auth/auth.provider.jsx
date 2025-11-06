@@ -49,7 +49,7 @@ export default function AuthProvider({children}) {
 
     useEffect(() => {
         if (isAuthRoute && user) {
-            navigate("/dashboard");
+            navigate("/");
         }else if(isAuthRoute === false && user === null){
             navigate("/login");
         }

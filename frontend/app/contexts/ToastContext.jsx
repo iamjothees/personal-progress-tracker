@@ -35,7 +35,7 @@ export function ToastProvider({ children }) {
     return (
         <ToastContext.Provider value={{ showToast }}>
             {children}
-            <div className="fixed bottom-4 inset-x-4 z-[9999] space-y-2 flex flex-col-reverse items-center max-h-[40vh] overflow-hidden pointer-events-none">
+            <div className="h-full w-full fixed bottom-0 z-[9999] flex flex-col-reverse items-center pointer-events-none">
                 {toasts.map((toast) => (
                     <div key={toast.id} className="w-full pointer-events-auto">
                         <Toast message={toast.message} type={toast.type} onClose={() => closeToast(toast.id)} />

@@ -1,12 +1,35 @@
+import { Button } from '@/shared/components/ui/button'
 import React from 'react'
+import { useAuth } from '../auth.provider';
+import { useNavigate } from 'react-router';
 
 function DevLogin() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const users = [
-        {email: 'WcF9l@example.com', password: 'password'},
-    ]
+        {email: 'test@example.com', password: 'password'},
+    ];
+
+    const handleLogin = (user) => {
+        login(user)
+            .then(() => {
+                navigate("/");
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+
     return (
-        <div>devLogin</div>
+        <div className="flex flex-col">
+            {
+                users.map(user => (
+                    <Button type="button" onClick={() => handleLogin(user)}>Login AS {user.email}</Button>
+                ))
+            }
+        </div>
     )
 }
 
-export default devLogin
+export default DevLogin;

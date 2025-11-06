@@ -11,7 +11,7 @@ export default function AuthLayout() {
     }, []);
 
     return (
-        <section className='min-h-screen flex flex-col justify-center items-center'>
+        <section className='flex-1 flex flex-col justify-center items-center'>
             <motion.header 
                 layout 
                 transition={{ layout: { duration: 1.5 }, }}

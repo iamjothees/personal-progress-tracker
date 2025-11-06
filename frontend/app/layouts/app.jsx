@@ -1,11 +1,26 @@
 import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/core/auth/auth.provider';
 import { Button } from '@/shared/components/ui/button'
-import { LogOut } from 'lucide-react'
+import { House, LogOut, Timer, User } from 'lucide-react'
 import React from 'react'
-import { Outlet, useNavigate } from 'react-router';
+import { Link, Outlet, useNavigate } from 'react-router';
+import Footer from '@/layouts/components/footer';
 
 function AppLayout() {
+    return (
+        <section className='flex-1 flex flex-col'>
+            <Header />
+            <main className='flex-1'>
+                <Outlet />
+            </main>
+            <Footer />
+        </section>
+    )
+}
+
+export default AppLayout
+
+const Header = () => {
     const { logout } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -21,17 +36,9 @@ function AppLayout() {
                 showToast("Error logging out. Please try again", "error");
             });
     }
-
     return (
-        <section>
-            <header className='flex justify-end'>
-                <Button onClick={handleLogout} size="icon"><LogOut /></Button>
-            </header>
-            <main>
-                <Outlet />
-            </main>
-        </section>
+        <header className='flex justify-end'>
+            <Button onClick={handleLogout} size="icon"><LogOut /></Button>
+        </header>
     )
 }
-
-export default AppLayout

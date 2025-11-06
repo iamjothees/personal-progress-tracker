@@ -41,6 +41,18 @@
     --color-accent-800 : var(--color-neutral-800);
     --color-accent-900 : var(--color-neutral-900);
     --color-accent-950 : var(--color-neutral-950);
+
+    --color-accent-light-50  : var(--color-stone-50);
+    --color-accent-light-100 : var(--color-stone-100);
+    --color-accent-light-200 : var(--color-stone-200);
+    --color-accent-light-300 : var(--color-stone-300);
+    --color-accent-light-400 : var(--color-stone-400);
+    --color-accent-light-500 : var(--color-stone-500);
+    --color-accent-light-600 : var(--color-stone-600);
+    --color-accent-light-700 : var(--color-stone-700);
+    --color-accent-light-800 : var(--color-stone-800);
+    --color-accent-light-900 : var(--color-stone-900);
+    --color-accent-light-950 : var(--color-stone-950);
 }
 
 @theme inline {
