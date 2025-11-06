@@ -1,7 +1,7 @@
 import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/core/auth/auth.provider';
 import { Button } from '@/shared/components/ui/button'
-import { House, LogOut, Timer, User } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import React from 'react'
 import { Link, Outlet, useNavigate } from 'react-router';
 import Footer from '@/layouts/components/footer';
@@ -10,7 +10,7 @@ function AppLayout() {
     return (
         <section className='flex-1 flex flex-col'>
             <Header />
-            <main className='flex-1'>
+            <main className='flex-1 flex flex-col'>
                 <Outlet />
             </main>
             <Footer />
@@ -21,7 +21,7 @@ function AppLayout() {
 export default AppLayout
 
 const Header = () => {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
 
@@ -37,8 +37,17 @@ const Header = () => {
             });
     }
     return (
-        <header className='flex justify-end'>
-            <Button onClick={handleLogout} size="icon"><LogOut /></Button>
+        <header className='flex justify-between items-center p-4'>
+            <div className=" flex items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-900 to-95%  h-12 w-12">
+                <Link to="/profile" className="display-text text-xl tracking-widest">
+                    {user.initial}
+                </Link>
+            </div>
+            <div className="flex items-center gap-4">
+                <Button onClick={handleLogout}>
+                    <LogOut size={20} />
+                </Button>
+            </div>
         </header>
     )
 }

@@ -1,5 +1,5 @@
 import { House, LayoutDashboard, Timer, User } from 'lucide-react'
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { cn } from "@/shared/lib/utils";
 import { motion } from 'motion/react';
 
@@ -28,20 +28,22 @@ const Menu = function (){
     return (
         <div className='w-full h-full flex items-center justify-around'>
             <MenuItem to="/" icon={<House size={25} />} text="Home" />
-            <MenuItem to="/" icon={<Timer size={25} />} text="Timers" isHighlighted={true}/>
-            <MenuItem to="/" icon={<LayoutDashboard size={25} />} text="Tasks"/>
-            <MenuItem to="/" icon={<User size={25} />} text="Profile"/>
+            <MenuItem to="/timers" icon={<Timer size={25} />} text="Timers"/>
+            <MenuItem to="/tasks" icon={<LayoutDashboard size={25} />} text="Tasks"/>
+            <MenuItem to="/profile" icon={<User size={25} />} text="Profile"/>
         </div>
     )
 }
 
 const MenuItem = function({isHighlighted = false, icon = <div />, text = "", to = "/"}){
+    const location = useLocation();
+
     return (
         <Link
             to={to}
             className={cn(
                 `flex flex-col items-center gap-1`,
-                isHighlighted 
+                location.pathname === to 
                     ? 'text-primary-500 dark:text-primary-500'
                     : 'text-accent-light-500 dark:text-accent-500'
             )}

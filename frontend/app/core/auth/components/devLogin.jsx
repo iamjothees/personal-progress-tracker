@@ -25,7 +25,7 @@ function DevLogin() {
         <div className="flex flex-col">
             {
                 users.map(user => (
-                    <Button type="button" onClick={() => handleLogin(user)}>Login AS {user.email}</Button>
+                    <Button key={user.email} type="button" onClick={() => handleLogin(user)}>Login AS {user.email}</Button>
                 ))
             }
         </div>

@@ -2,6 +2,9 @@ export class UserModel {
     id: string;
     name: string;
     email: string;
+    public get initial() : string {
+        return this.name.split(' ').slice(0, 2).map((word) => word.charAt(0)).join('');
+    }
 
     constructor(
         id: string,
@@ -11,6 +14,7 @@ export class UserModel {
         this.id = id;
         this.name = name;
         this.email = email;
+        
     }
 
     static fromJson(json: any): UserModel {

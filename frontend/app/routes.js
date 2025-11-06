@@ -1,4 +1,4 @@
-import { layout, route } from "@react-router/dev/routes";
+import { layout, route, index } from "@react-router/dev/routes";
 
 export default [
     layout('./layouts/auth.jsx', [
@@ -7,6 +7,8 @@ export default [
     ]),
 
     layout('./layouts/app.jsx', [
-        route("dashboard", "screens/dashboard.jsx"),
+        index("screens/dashboard.jsx"),
+        
+        route("timers", "timers/screens/index.jsx"),
     ]),
 ];
