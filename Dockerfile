@@ -9,6 +9,4 @@ RUN source $NVM_DIR/nvm.sh \
 
 RUN echo 'alias nrd="npm run dev -- --host"'  >> ~/.bashrc
 
-CMD nvm use $NODE_VERSION
-
 EXPOSE 4173

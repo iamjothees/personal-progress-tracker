@@ -44,7 +44,7 @@ const MenuItem = function({isHighlighted = false, icon = <div />, text = "", to 
             className={cn(
                 `flex flex-col items-center gap-1`,
                 location.pathname === to 
-                    ? 'text-primary-500 dark:text-primary-500'
+                    ? 'text-primary-700 dark:text-primary-500'
                     : 'text-accent-light-500 dark:text-accent-500'
             )}
         >

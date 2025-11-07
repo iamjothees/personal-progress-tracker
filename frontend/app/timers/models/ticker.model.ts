@@ -2,6 +2,14 @@ interface Config {
     showSeconds: boolean
 }
 
+interface Props {
+    days?: number;
+    hours?: number;
+    minutes?: number;
+    seconds?: number;
+    config?: Config;
+}
+
 class Ticker {
     days: number;
     hours: number;
@@ -22,7 +30,9 @@ class Ticker {
     get formattedDays(): string {
         return `${this.days} Days`;
     }
-    constructor(days: number = 0, hours: number = 0, minutes: number = 0, seconds: number = 0, config: Config = { showSeconds: false }) {
+    constructor(
+        {days = 0, hours = 0, minutes = 0, seconds = 0, config = { showSeconds: false }}: Props = {}
+    ) {
         this.days = days;
         this.hours = hours;
         this.minutes = minutes;
@@ -46,7 +56,7 @@ class Ticker {
         return this;
     }
     clone(): Ticker {
-        const newTicker = new Ticker(this.days, this.hours, this.minutes, this.seconds, this.config);
+        const newTicker = new Ticker({days: this.days, hours: this.hours, minutes: this.minutes, seconds: this.seconds, config: {...this.config}});
         return newTicker;
     }
 }
