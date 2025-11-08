@@ -44,6 +44,7 @@ function AppLayout() {
                             animate="animate"
                             exit="exit"
                             transition={{ duration: 0.5 }}
+                            className='flex-1 flex flex-col'
                         >
                             {element}
                         </motion.div>
