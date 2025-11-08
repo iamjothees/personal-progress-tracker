@@ -34,7 +34,7 @@ export function Layout({ children }) {
         <Meta />
         <Links />
       </head>
-      <body className="w-full min-h-screen flex flex-col">
+      <body className="w-full min-h-screen !min-h-dvh flex flex-col">
         {children}
         <ScrollRestoration />
         <Scripts />
