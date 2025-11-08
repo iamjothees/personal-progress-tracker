@@ -10,7 +10,7 @@ function Footer() {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             className="
-                min-h-18 flex justify-around items-center 
+                min-h-18 flex justify-around items-center
                 border-t rounded-t-2xl
                 bg-accent-light-300 dark:bg-accent-800
                 animate-fade-in-up
@@ -35,15 +35,15 @@ const Menu = function (){
     )
 }
 
-const MenuItem = function({isHighlighted = false, icon = <div />, text = "", to = "/"}){
+const MenuItem = function({icon = <div />, text = "", to = "/"}){
     const location = useLocation();
 
     return (
         <Link
             to={to}
             className={cn(
-                `flex flex-col items-center gap-1`,
-                location.pathname === to 
+                "flex flex-col items-center gap-1 transition-colors duration-300",
+                location.pathname === to
                     ? 'text-primary-700 dark:text-primary-500'
                     : 'text-accent-light-500 dark:text-accent-500'
             )}

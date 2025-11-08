@@ -1,17 +1,54 @@
-import { useToast } from '@/contexts/ToastContext';
-import { useAuth } from '@/core/auth/auth.provider';
-import { Button } from '@/shared/components/ui/button'
-import { LogOut } from 'lucide-react'
 import React from 'react'
-import { Link, Outlet, useNavigate } from 'react-router';
+import { useLocation, useOutlet } from 'react-router';
+import Header from '@/layouts/components/header';
 import Footer from '@/layouts/components/footer';
+import { AnimatePresence, motion } from 'motion/react';
+
+const slideVariants = {
+    initial: {
+        x: '100%', // Start from right
+        opacity: 0,
+    },
+    animate: {
+        x: '0%', // Slide to center
+        opacity: 1,
+        transition: {
+            duration: 0.5,
+            ease: 'easeInOut',
+        },
+    },
+    exit: {
+        x: '-100%', // Slide out to left
+        opacity: 0,
+        transition: {
+            duration: 0.5,
+            ease: 'easeInOut',
+        },
+    },
+};
 
 function AppLayout() {
+    const location = useLocation();
+    const element = useOutlet();
     return (
         <section className='flex-1 flex flex-col'>
             <Header />
             <main className='flex-1 flex flex-col'>
-                <Outlet />
+                <AnimatePresence mode="wait">
+                    {
+                        element &&
+                        <motion.div
+                            key={location.pathname}
+                            variants={slideVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            transition={{ duration: 0.5 }}
+                        >
+                            {element}
+                        </motion.div>
+                    }
+                </AnimatePresence>
             </main>
             <Footer />
         </section>
@@ -19,35 +56,3 @@ function AppLayout() {
 }
 
 export default AppLayout
-
-const Header = () => {
-    const { user, logout } = useAuth();
-    const { showToast } = useToast();
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout()
-            .then(() => {
-                showToast("Bye! You are now logged out", "success");
-                navigate("/login");
-            })
-            .catch((error) => {
-                console.error(error);
-                showToast("Error logging out. Please try again", "error");
-            });
-    }
-    return (
-        <header className='flex justify-between items-center p-4'>
-            <div className=" flex items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-900 to-95%  h-12 w-12">
-                <Link to="/profile" className="display-text text-xl tracking-widest">
-                    {user.initial}
-                </Link>
-            </div>
-            <div className="flex items-center gap-4">
-                <Button onClick={handleLogout}>
-                    <LogOut size={20} />
-                </Button>
-            </div>
-        </header>
-    )
-}
