@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimation } from "motion/react";
 import clockDial from "@/timers/assets/clock-dial.png";
 import TickerModel from '@/timers/models/ticker.model';
@@ -10,12 +10,12 @@ export default function Ticker () {
     const tickerTimeoutRef = useRef(null);
     const animateControls = useAnimation();
 
-    const tick = useCallback(() => {
+    const tick = () => {
         tickerTimeoutRef.current = setTimeout(() => {
             setTicker(ticker.tick().clone());
         }, 1000);
         return () => clearTimeout(tickerTimeoutRef.current);
-    }, []);
+    };
 
     const handlePlay = () => {
         setRunning(true);
@@ -23,6 +23,17 @@ export default function Ticker () {
 
     const handlePause = () => {
         setRunning(false);
+    }
+
+    const handleReset = () => {
+        setRunning(false);
+        setTicker(new TickerModel());
+    }
+
+    const handleComplete = () => {
+        // Stop the ticker
+        setRunning(false);
+        setTicker(ticker.complete().clone());
     }
 
     useEffect(() => {
@@ -96,25 +107,38 @@ export default function Ticker () {
                     animate={{ opacity: 1 }}
                     className='mt-16 w-full flex items-center justify-around'
                 >
-                    <div onClick={ticker.stop} className="rounded-full p-2 border-2 bg-accent-200 dark:bg-accent-800 text-green-600 border-primary">
-                        <Check size={31} strokeWidth={3} />
-                    </div>
-                    <div onClick={running ? handlePause : handlePlay} className="rounded-full bg-primary p-3 text-primary-foreground">
-                        <AnimatePresence mode="wait">
-                            {
-                                running
-                                    ? <motion.div key="pause" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.2 }  }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
-                                        <Pause size={43} fill="currentColor" />
-                                    </motion.div>
-                                    : <motion.div key="play" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.2 }  }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
-                                        <Play  size={43} fill="currentColor" />
-                                    </motion.div>
-                            }
-                        </AnimatePresence>
-                    </div>
-                    <div onClick={ticker.reset} className="rounded-full p-2 border-2 bg-accent-200 dark:bg-accent-800 text-accent-600 dark:text-accent-400 border-primary">
-                        <RotateCcw size={33} strokeWidth={2} />
-                    </div>
+                    {
+                        ticker.completed === true 
+                        ? <>
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.7, duration: 0.7 } }} exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.7 } }}
+                                className="flex-grow text-center rounded-full py-1.5 border-2 bg-green-100/50 dark:bg-accent-700/50 text-green-600 border-green-700 dark:border-green-900"
+                            >
+                                Completed
+                            </motion.div>
+                        </>
+                        : <>
+                            <div onClick={handleComplete} className="rounded-full p-2 border-2 bg-green-100/50 dark:bg-green-900/50 text-green-600 border-primary">
+                                <Check size={31} strokeWidth={3} />
+                            </div>
+                            <div onClick={running ? handlePause : handlePlay} className="rounded-full bg-primary p-3 text-primary-foreground">
+                                <AnimatePresence mode="wait">
+                                    {
+                                        running
+                                            ? <motion.div key="pause" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.2 }  }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
+                                                <Pause size={43} fill="currentColor" />
+                                            </motion.div>
+                                            : <motion.div key="play" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.2 }  }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
+                                                <Play  size={43} fill="currentColor" />
+                                            </motion.div>
+                                    }
+                                </AnimatePresence>
+                            </div>
+                            <div onClick={handleReset} className="rounded-full p-2 border-2 bg-accent-200 dark:bg-accent-800 text-accent-600 dark:text-accent-400 border-primary">
+                                <RotateCcw size={33} strokeWidth={2} />
+                            </div>
+                        </>
+                    }
                 </motion.footer>
             }
         </section>
