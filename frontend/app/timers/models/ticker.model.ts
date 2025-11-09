@@ -28,7 +28,10 @@ class Ticker {
         return `${this.seconds}`.padStart(2, "0");
     }
     get formattedDays(): string {
-        return `${this.days} Days`;
+        return `${this.days}`;
+    }
+    get started(): boolean {
+        return this.days > 0 || this.hours > 0 || this.minutes > 0 || this.seconds > 0;
     }
     constructor(
         {days = 0, hours = 0, minutes = 0, seconds = 0, config = { showSeconds: false }}: Props = {}
