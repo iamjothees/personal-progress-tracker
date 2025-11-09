@@ -61,9 +61,9 @@ export default function useFetcher( config: Config ) {
                         setLoading(false);
                     });
         }else{
-            setData(() => api.data);
-            setError(() => api.error);
-            setLoading(() => api.loading);
+            setData(api.data);
+            setError(api.error);
+            setLoading(api.loading);
 
             switch (config.method) {
                 case 'get':
