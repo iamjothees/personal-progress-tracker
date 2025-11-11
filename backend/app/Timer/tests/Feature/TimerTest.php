@@ -322,3 +322,90 @@ test('timer resource includes unique related projects and tasks', function () {
     $response->assertJsonCount(1, 'timer.tasks');
     $response->assertJsonPath('timer.tasks.0.id', $task->id);
 });
+
+test('timer elapsed seconds calculation without activities', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(30),
+    ]);
+
+    // With no activities, elapsed time should be the difference between now and started_at
+    $expectedElapsed = 30;
+    $this->assertEquals($expectedElapsed, $timer->elapsed_seconds);
+});
+
+test('timer elapsed seconds calculation with stopped timer', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(60),
+        'stopped_at' => now()->subSeconds(30),
+    ]);
+
+    // When timer is stopped, elapsed time is the difference between stopped_at and started_at
+    $expectedElapsed = 30;
+    $this->assertEquals($expectedElapsed, $timer->elapsed_seconds);
+});
+
+test('timer elapsed seconds calculation with single activity', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(60),
+    ]);
+
+    // Create an activity that pauses after 20 seconds
+    $timer->activities()->create([
+        'paused_at' => $timer->started_at->copy()->addSeconds(20),
+        'resumed_at' => $timer->started_at->copy()->addSeconds(40),
+    ]);
+
+    // Total time is 60 seconds, with 20 seconds of break (pause to resume)
+    // So elapsed time should be 60 - 20 = 40 seconds
+    $expectedElapsed = 40;
+    $this->assertEquals($expectedElapsed, $timer->elapsed_seconds);
+});
+
+test('timer elapsed seconds calculation with multiple activities', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(100),
+    ]);
+
+    // First activity: pause after 20s and resume after 10s break (resumes at 30s mark)
+    $timer->activities()->create([
+        'paused_at' => $timer->started_at->copy()->addSeconds(20),
+        'resumed_at' => $timer->started_at->copy()->addSeconds(30),
+    ]);
+
+    // Second activity: pause after another 30s (at 60s mark) and still paused (now is at 100s mark)
+    $timer->activities()->create([
+        'paused_at' => $timer->started_at->copy()->addSeconds(60),
+        // resumed_at is null, so this break continues until now
+    ]);
+
+    // Total time: 100 seconds
+    // First break: 10 seconds (from 20s to 30s mark)
+    // Second break: 40 seconds (from 60s mark to now (100s))
+    // Elapsed time: 100 - 10 - 40 = 50 seconds
+    $expectedElapsed = 50;
+    $this->assertEquals($expectedElapsed, $timer->elapsed_seconds);
+});
+
+test('timer elapsed seconds calculation with stopped timer and activities', function () {
+    $user = User::factory()->create();
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(100),
+        'stopped_at' => now()->subSeconds(20), // Stopped 20 seconds ago, so ran for 80 seconds total
+    ]);
+
+    // Create an activity that pauses after 20 seconds from start and resumes after 10 seconds break
+    $timer->activities()->create([
+        'paused_at' => $timer->started_at->copy()->addSeconds(20),
+        'resumed_at' => $timer->started_at->copy()->addSeconds(30),
+    ]);
+
+    // Total time: 80 seconds (from start to stop)
+    // Break time: 10 seconds (from 20s to 30s mark)
+    // Elapsed time: 80 - 10 = 70 seconds
+    $expectedElapsed = 70;
+    $this->assertEquals($expectedElapsed, $timer->elapsed_seconds);
+});

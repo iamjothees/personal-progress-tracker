@@ -8,6 +8,7 @@ use App\Timer\Exceptions\TimerActionException;
 use App\Timer\Models\Timer;
 use App\Timer\Models\TimerActivity;
 use Illuminate\Database\Eloquent\Collection AS EloquentCollection;
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Validator;
 
 class TimerService
@@ -23,7 +24,7 @@ class TimerService
     }
 
     public function startTimer(User $owner): Timer{
-        $timer = $owner->timers()->create([ 'started_at' => now() ]);
+        $timer = $owner->timers()->create([ 'started_at' => Context::get('now') ]);
 
         return $timer;
     }
@@ -49,7 +50,7 @@ class TimerService
             throw new TimerActionException($validator->errors()->first());
         }
 
-        $timer->activities()->create([ 'paused_at' => now() ]);
+        $timer->activities()->create([ 'paused_at' => Context::get('now') ]);
 
         return $timer->fresh();
     }
@@ -75,7 +76,7 @@ class TimerService
             throw new TimerActionException($validator->errors()->first());
         }
 
-        $timerActivity->update([ 'resumed_at' => now() ]);
+        $timerActivity->update([ 'resumed_at' => Context::get('now') ]);
 
         return $timerActivity->timer->fresh();
     }
@@ -91,7 +92,7 @@ class TimerService
             throw new TimerActionException($validator->errors()->first());
         }
 
-        $timer->update([ 'stopped_at' => now() ]);
+        $timer->update([ 'stopped_at' => Context::get('now') ]);
 
         return $timer->fresh();
     }
@@ -111,5 +112,10 @@ class TimerService
         );
 
         return $timer->load('matrices.timeTrackable');
+    }
+
+    public function getElapsedSeconds(Timer $timer): int{
+        $seconds = 0;
+        return $seconds;
     }
 }

@@ -33,6 +33,7 @@ class TimerResource extends JsonResource
             'owner' => $this->owner,
             'started_at' => $this->started_at,
             'stopped_at' => $this->stopped_at,
+            'elapsed_seconds' => $this->elapsed_seconds,
             'latestActivity' => $this->latestActivity,
             'activities' => $this->whenLoaded('activities', $this->activities),
             'projects' => $projects,
