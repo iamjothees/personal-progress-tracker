@@ -97,6 +97,13 @@ class TimerService
         return $timer->fresh();
     }
 
+    public function resetTimer(Timer $timer): void{
+        $timer->loadMissing('activities');
+        $timer->activities->each->delete();
+        $timer->delete();
+        return;
+    }
+
     public function addTimeTrackables(Timer $timer, array $timeTrackables): Timer{
         $timer->matrices()->upsert(
             collect($timeTrackables)->map(fn ($timeTrackable) => [

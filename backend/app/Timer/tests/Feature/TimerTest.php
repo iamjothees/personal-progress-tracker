@@ -15,6 +15,7 @@ test('guests cannot access any timer endpoints', function () {
     $this->postJson('/api/timers/1/actions/pause')->assertUnauthorized();
     $this->postJson('/api/timers/1/actions/1/resume')->assertUnauthorized();
     $this->postJson('/api/timers/1/actions/stop')->assertUnauthorized();
+    $this->postJson('/api/timers/1/actions/reset')->assertUnauthorized();
 });
 
 test('users cannot access timers belonging to other users', function () {
@@ -30,6 +31,7 @@ test('users cannot access timers belonging to other users', function () {
     $this->postJson("/api/timers/{$timer->id}/actions/pause")->assertForbidden();
     $this->postJson("/api/timers/{$timer->id}/actions/{$activity->id}/resume")->assertForbidden();
     $this->postJson("/api/timers/{$timer->id}/actions/stop")->assertForbidden();
+    $this->postJson("/api/timers/{$timer->id}/actions/reset")->assertForbidden();
 });
 
 test('a user can retrieve a list of their own running timers', function () {
@@ -408,4 +410,68 @@ test('timer elapsed seconds calculation with stopped timer and activities', func
     // Elapsed time: 80 - 10 = 70 seconds
     $expectedElapsed = 70;
     $this->assertEquals($expectedElapsed, $timer->elapsed_seconds);
+});
+
+test('a user can reset a timer', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    // Create a timer with start time
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(60),
+    ]);
+
+    // Add some activities to the timer
+    $timer->activities()->create([
+        'paused_at' => $timer->started_at->copy()->addSeconds(20),
+        'resumed_at' => $timer->started_at->copy()->addSeconds(40),
+    ]);
+
+    // Reset the timer
+    $response = $this->postJson("/api/timers/{$timer->id}/actions/reset");
+
+    $response->assertOk();
+    
+    // Check that the timer no longer exists in the database (deleted)
+    $this->assertModelMissing($timer);
+});
+
+test('a user can reset a timer that is currently running', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    // Create a running timer
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(30),
+    ]);
+
+    // Reset the timer
+    $response = $this->postJson("/api/timers/{$timer->id}/actions/reset");
+
+    $response->assertOk();
+    
+    // Check that the timer no longer exists in the database (deleted)
+    $this->assertModelMissing($timer);
+});
+
+test('trying to reset a timer that was already deleted returns not found', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    // Create a timer and reset it (deleting it)
+    $timer = Timer::factory()->for($user, 'owner')->create([
+        'started_at' => now()->subSeconds(30),
+    ]);
+
+    // First reset - this should delete the timer
+    $this->postJson("/api/timers/{$timer->id}/actions/reset")->assertOk();
+    
+    // Verify timer is deleted
+    $this->assertModelMissing($timer);
+
+    // Try to reset again - this should return 404 since the timer doesn't exist
+    $response = $this->postJson("/api/timers/{$timer->id}/actions/reset");
+    
+    // Expecting a 404 response since the timer no longer exists
+    $response->assertNotFound();
 });

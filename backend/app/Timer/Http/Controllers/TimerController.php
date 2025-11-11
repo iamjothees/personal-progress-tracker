@@ -63,6 +63,16 @@ class TimerController extends Controller
         return new ApiResponse(data: ['timer' => $timer->toResource()]);
     }
 
+    public function reset(Timer $timer): ApiResponse{
+        try {
+            $this->timerService->resetTimer(timer: $timer);
+        } catch (TimerActionException $e) {
+            throw ValidationException::withMessages(['timer' => $e->getMessage()]);
+        }
+
+        return new ApiResponse();
+    }
+
     public function addTimeTrackables(AddTrackablesRequest $request, Timer $timer): ApiResponse{
         try {
             $timer = $this->timerService->addTimeTrackables(timer: $timer, timeTrackables: $request->validated('time_trackables'));

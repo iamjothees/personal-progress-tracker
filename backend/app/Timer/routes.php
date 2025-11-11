@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/pause', [TimerController::class, 'pause'])->name('pause')->can('act', 'timer');
             Route::post('{timerActivity}/resume', [TimerController::class, 'resume'])->name('resume')->can('act', 'timer');
             Route::post('/stop', [TimerController::class, 'stop'])->name('stop')->can('act', 'timer');
+            Route::post('/reset', [TimerController::class, 'reset'])->name('reset')->can('act', 'timer');
         });
 
         Route::post('/{timer}/time-trackables', [TimerController::class, 'addTimeTrackables'])->name('addTimeTrackables')
