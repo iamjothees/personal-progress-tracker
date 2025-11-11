@@ -89,7 +89,7 @@ test('a user can pause a running timer', function () {
 
     $response->assertOk();
     $response->assertJsonPath('timer.id', $timer->id);
-    $response->assertJsonPath('timer.latestActivity.paused_at', fn (string $pausedAt) => $pausedAt !== null);
+    $response->assertJsonPath('timer.latest_activity.paused_at', fn (string $pausedAt) => $pausedAt !== null);
     $this->assertDatabaseHas('timer_activities', [
         'timer_id' => $timer->id,
     ]);
