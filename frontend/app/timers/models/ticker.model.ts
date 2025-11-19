@@ -11,7 +11,7 @@ interface Props {
     config?: Config;
 }
 
-class Ticker {
+class TickerModel {
     days: number;
     hours: number;
     minutes: number;
@@ -45,7 +45,7 @@ class Ticker {
         this.completed = completed;
         this.config = config;
     }
-    tick(): Ticker {
+    tick(): TickerModel {
         ++this.seconds;
         if (this.seconds === 60) {
             ++this.minutes;
@@ -61,12 +61,31 @@ class Ticker {
         }
         return this;
     }
-    complete(): Ticker {
+    tock(): TickerModel {
+        --this.seconds;
+        if (this.seconds === -1) {
+            --this.minutes;
+            this.seconds = 59;
+        }
+        if (this.minutes === -1) {
+            --this.hours;
+            this.minutes = 59;
+        }
+        if (this.hours === -1) {
+            --this.days;
+            this.hours = 23;
+        }
+        if (this.days < 0) {
+            this.days = 0;
+        }
+        return this;
+    }
+    complete(): TickerModel {
         this.completed = true;
         return this;
     }
-    clone(): Ticker {
-        const newTicker = new Ticker({
+    clone(): TickerModel {
+        const newTicker = new TickerModel({
             days: this.days, hours: this.hours, minutes: this.minutes, seconds: this.seconds, 
             completed: this.completed,
             config: {...this.config}
@@ -74,4 +93,4 @@ class Ticker {
         return newTicker;
     }
 }
-export default Ticker
+export default TickerModel

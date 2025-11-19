@@ -3,6 +3,18 @@ import ApiPreflight from "@/core/http/apiPreflight";
 import { ScreenContextProvider } from "./contexts/ScreenContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import AuthProvider from "./core/auth/auth.provider";
+import dayjs from "dayjs";
+import 'dayjs/locale/en-in';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import duration from 'dayjs/plugin/duration';
+import advancedFormat from 'dayjs/plugin/advancedFormat'; 
+
+// Configure dayjs
+dayjs
+  .extend(relativeTime)
+  .extend(duration)
+  .extend(advancedFormat)
+  .locale("en-in");
 
 const App = function() {
   return (
