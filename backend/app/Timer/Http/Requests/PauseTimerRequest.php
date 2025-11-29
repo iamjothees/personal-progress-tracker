@@ -16,6 +16,7 @@ class PauseTimerRequest extends FormRequest
         return [
             'has_latest_activity' => 'boolean',
             'same_latest_activity' => 'accepted_if:has_latest_activity,true',
+            'seconds_elapsed' => ['nullable', 'integer']
         ];
     }
 
@@ -23,6 +24,7 @@ class PauseTimerRequest extends FormRequest
     {
         return [
             'same_latest_activity' => 'Latest activity does not match',
+            'seconds_elapsed' => 'Invalid format',
         ];
     }
 

@@ -48,6 +48,16 @@ class Timer extends Model
         );
     }
 
+    public function getRunningAttribute(): bool{
+        $this->loadMissing('activities', 'latestActivity');
+        
+        if ($this->stopped_at) return false;
+
+        if ($this->latestActivity && $this->latestActivity->resumed_at === null) return false;
+
+        return true;
+    }
+
     public function getElapsedSecondsAttribute(){
         $this->loadMissing('activities', 'latestActivity');
         $end = $this->stopped_at ?? Context::get('now');

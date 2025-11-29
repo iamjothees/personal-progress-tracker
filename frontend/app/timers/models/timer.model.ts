@@ -8,6 +8,7 @@ interface ConstructorParams {
     startedAt: Dayjs;
     stoppedAt: Dayjs|null;
     elapsedSeconds: number;
+    running: boolean;
     activities: TimerActivityModel[];
     latestActivity: TimerActivityModel | null;
     owner: UserModel;
@@ -62,6 +63,7 @@ class TimerModel {
     startedAt: Dayjs;
     stoppedAt: Dayjs|null = null;
     elapsedSeconds: number;
+    running: boolean = false;
     activities: TimerActivityModel[];
     latestActivity: TimerActivityModel | null;
     owner: UserModel;
@@ -71,7 +73,7 @@ class TimerModel {
     _duration: DayjsDuration;
 
     constructor(
-        {id, startedAt, stoppedAt, elapsedSeconds, activities, latestActivity, owner}: ConstructorParams
+        {id, startedAt, stoppedAt, elapsedSeconds, running, activities, latestActivity, owner}: ConstructorParams
     ) {
 
         if (dayjs(startedAt).isValid() === false) {
@@ -95,6 +97,7 @@ class TimerModel {
         this.startedAt = startedAt;
         this.stoppedAt = stoppedAt;
         this.elapsedSeconds = elapsedSeconds;
+        this.running = running;
         this.activities = activities;
         this.latestActivity = latestActivity;
         this.owner = owner;
@@ -156,6 +159,7 @@ class TimerModel {
             startedAt: dayjs(json.started_at),
             stoppedAt: json.stopped_at ? dayjs(json.stopped_at) : null,
             elapsedSeconds: json.elapsed_seconds,
+            running: Boolean(json.running),
             activities: json.activities.map((activity: any) => TimerActivityModel.fromJson(activity)),
             latestActivity: json.latest_activity ? TimerActivityModel.fromJson(json.latest_activity) : null,
             owner: UserModel.fromJson(json.owner),

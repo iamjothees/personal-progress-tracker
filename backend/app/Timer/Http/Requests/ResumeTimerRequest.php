@@ -16,6 +16,7 @@ class ResumeTimerRequest extends FormRequest
         return [
             'timer_activity' => 'accepted',
             'same_latest_activity' => 'accepted',
+            'seconds_elapsed' => ['nullable', 'integer']
         ];
     }
 
@@ -24,6 +25,7 @@ class ResumeTimerRequest extends FormRequest
         return [
             'timer_activity' => 'Timer activity does not belong to this timer.',
             'same_latest_activity' => 'Latest activity does not match',
+            'seconds_elapsed' => 'Invalid format',
         ];
     }
 

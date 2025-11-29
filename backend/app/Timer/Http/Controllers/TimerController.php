@@ -8,9 +8,11 @@ use App\Timer\Exceptions\TimerActionException;
 use App\Timer\Http\Requests\AddTrackablesRequest;
 use App\Timer\Http\Requests\PauseTimerRequest;
 use App\Timer\Http\Requests\ResumeTimerRequest;
+use App\Timer\Http\Requests\StopTimerRequest;
 use App\Timer\Models\Timer;
 use App\Timer\Models\TimerActivity;
 use App\Timer\Services\TimerService;
+use Exception;
 use Illuminate\Validation\ValidationException;
 
 class TimerController extends Controller
@@ -19,6 +21,7 @@ class TimerController extends Controller
 
     public function index(): ApiResponse{
         $timers = $this->timerService->getTimers(owner: auth()->user());
+        return new ApiResponse(data: ['timers' => []]); // dev
         return new ApiResponse(data: ['timers' => $timers->toResourceCollection()]);
     }
 
@@ -35,7 +38,7 @@ class TimerController extends Controller
 
     public function pause(PauseTimerRequest $request, Timer $timer): ApiResponse{
         try {
-            $timer = $this->timerService->pauseTimer(timer: $timer);
+            $timer = $this->timerService->pauseTimer(timer: $timer, secondsElapsed: $request->seconds_elapsed);
         } catch (TimerActionException $e) {
             throw ValidationException::withMessages(['timer' => $e->getMessage()]);
         }
@@ -44,8 +47,9 @@ class TimerController extends Controller
     }
 
     public function resume(ResumeTimerRequest $request, Timer $timer, TimerActivity $timerActivity): ApiResponse{
+        // throw new Exception('test'); // dev
         try {
-            $timer = $this->timerService->resumeTimer(timerActivity: $timerActivity);
+            $timer = $this->timerService->resumeTimer(timerActivity: $timerActivity, secondsElapsed: $request->seconds_elapsed);
         } catch (TimerActionException $e) {
             throw ValidationException::withMessages(['timer' => $e->getMessage()]);
         }
@@ -53,9 +57,9 @@ class TimerController extends Controller
         return new ApiResponse(data: ['timer' => $timer->toResource()]);
     }
 
-    public function stop(Timer $timer): ApiResponse{
+    public function stop(StopTimerRequest $request, Timer $timer): ApiResponse{
         try {
-            $timer = $this->timerService->stopTimer(timer: $timer);
+            $timer = $this->timerService->stopTimer(timer: $timer, secondsElapsed: $request->seconds_elapsed);
         } catch (TimerActionException $e) {
             throw ValidationException::withMessages(['timer' => $e->getMessage()]);
         }
